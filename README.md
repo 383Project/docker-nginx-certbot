@@ -1,4 +1,13 @@
-# docker-nginx-certbot
+# docker-nginx-certbot-azure
+
+This repository is a fork and modification of [staticfloat/docker-nginx-certbot](https://github.com/staticfloat/docker-nginx-certbot) for the Money Heroes project, to allow Certbot to run with Symlinks by backing up the /etc/letsencrypt contents to an Azure Fileshare instead of writing to the mounted volume directly. This is due to the fact Azure Fileshare does not support symbolic links which certbot operations require.
+
+For this image to function, the following environment variables must be made available to the image:
+
+`CERTBOT_SYNC_CONFIG=[0|1]`
+`CERTBOT_SYNC_CONFIG_TARBALL_FILEPATH=[path/to/file:string]`
+
+## docker-nginx-certbot
 Create and automatically renew website SSL certificates using the free [letsencrypt](https://letsencrypt.org/) certificate authority, and its client [*certbot*](https://certbot.eff.org/), built on top of the [nginx](https://www.nginx.com/) webserver.
 
 This repository was originally forked from `@henridwyer`, many thanks to him for the good idea.  It has since been completely rewritten, and bears almost no resemblance to the original.  This repository is _much_ more opinionated about the structure of your webservers/containers, however it is easier to use as long as all of your webservers follow the given pattern.

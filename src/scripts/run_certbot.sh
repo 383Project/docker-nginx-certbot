@@ -9,8 +9,30 @@ if [ -z "$CERTBOT_EMAIL" ]; then
     exit 1
 fi
 
+if [ -z "$CERTBOT_SYNC_CONFIG" ]; then
+    error "CERTBOT_SYNC_CONFIG environment variable undefined; /etc/letsencrypt cannot be backed up"
+    exit 1
+fi
+
+if [ -z "$CERTBOT_SYNC_CONFIG_TARBALL_FILEPATH" ]; then
+    error "CERTBOT_SYNC_CONFIG_TARBALL_FILEPATH environment variable undefined; /etc/letsencrypt cannot be backed up"
+    exit 1
+fi
+
 exit_code=0
 set -x
+
+if [ "$CERTBOT_SYNC_CONFIG" = 1 ] || [ "$(echo "$CERTBOT_SYNC_CONFIG" | tr '[:upper:]' '[:lower:]')" = true ]; then
+    echo "Pulling Certbot config from storage"
+    rm -fr /etc/letsencrypt
+    mkdir -m 755 /etc/letsencrypt
+    if [ -f "$CERTBOT_SYNC_CONFIG_TARBALL_FILEPATH" ]; then
+        cd /etc/letsencrypt && tar xf "$CERTBOT_SYNC_CONFIG_TARBALL_FILEPATH"
+    else
+        echo "Could not find CERTBOT_SYNC_CONFIG_TARBALL_FILEPATH: $CERTBOT_SYNC_CONFIG_TARBALL_FILEPATH"
+    fi
+fi
+
 # Loop over every domain we can find
 for domain in $(parse_domains); do
     if is_renewal_required $domain; then
@@ -24,6 +46,11 @@ for domain in $(parse_domains); do
         echo "Not run certbot for $domain; last renewal happened just recently."
     fi
 done
+
+if [ "$CERTBOT_SYNC_CONFIG" = 1 ] || [ "$(echo "$CERTBOT_SYNC_CONFIG" | tr '[:upper:]' '[:lower:]')" = true ]; then
+    echo "Pushing Certbot config to storage"
+    cd /etc/letsencrypt && tar cvf "$CERTBOT_SYNC_CONFIG_TARBALL_FILEPATH" .
+fi
 
 # After trying to get all our certificates, auto enable any configs that we
 # did indeed get certificates for
