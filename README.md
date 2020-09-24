@@ -5,7 +5,10 @@ This repository is a fork and modification of [staticfloat/docker-nginx-certbot]
 For this image to function, the following environment variables must be made available to the image:
 
 `CERTBOT_SYNC_CONFIG=[0|1]`
+
 `CERTBOT_SYNC_CONFIG_TARBALL_FILEPATH=[path/to/file:string]`
+
+`NGINX_SYNC_CONFIG_TARBALL_FILEPATH=[path/to/file:string]`
 
 ## docker-nginx-certbot
 Create and automatically renew website SSL certificates using the free [letsencrypt](https://letsencrypt.org/) certificate authority, and its client [*certbot*](https://certbot.eff.org/), built on top of the [nginx](https://www.nginx.com/) webserver.

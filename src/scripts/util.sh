@@ -73,9 +73,10 @@ get_certificate() {
     fi
 
     echo "running certbot ... $letsencrypt_url $1 $2"
-    certbot --agree-tos --keep -n --email $2 --server \
-        $letsencrypt_url -d $1 \
-        --nginx --debug
+    certbot --nginx --agree-tos --keep -n \
+        --email $2 --server $letsencrypt_url -d $1 \
+        --redirect --uir --hsts --staple-ocsp --must-staple \
+        --debug
 }
 
 # Given a domain name, return true if a renewal is required (last renewal
