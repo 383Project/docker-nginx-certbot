@@ -15,8 +15,9 @@ error() {
 # /etc/letsencrypt/live/<primary_domain_name>/privkey.pem
 parse_domains() {
     # For each configuration file in /etc/nginx/conf.d/*.conf*
-    for conf_file in /etc/nginx/conf.d/*.conf*; do
-        sed -n -r -e 's&^\s*ssl_certificate_key\s*\/etc/letsencrypt/live/(.*)/privkey.pem;\s*(#.*)?$&\1&p' $conf_file | xargs echo
+    for conf_file in /etc/nginx/conf.d/*.conf; do
+        # sed -n -r -e 's&^\s*ssl_certificate_key\s*\/etc/letsencrypt/live/(.*)/privkey.pem;\s*(#.*)?$&\1&p' $conf_file | xargs echo
+        sed -n -r -e 's&^\s*server_name\s*(.*);\s*(#.*)?$&\1&p' $conf_file | xargs echo
     done
 }
 
@@ -72,9 +73,9 @@ get_certificate() {
     fi
 
     echo "running certbot ... $letsencrypt_url $1 $2"
-    certbot certonly --agree-tos --keep -n --text --email $2 --server \
-        $letsencrypt_url -d $1 --http-01-port 1337 \
-        --standalone --preferred-challenges http-01 --debug
+    certbot --agree-tos --keep -n --email $2 --server \
+        $letsencrypt_url -d $1 \
+        --nginx --debug
 }
 
 # Given a domain name, return true if a renewal is required (last renewal

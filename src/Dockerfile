@@ -10,7 +10,7 @@ EXPOSE 443
 RUN apt update && \
     apt install -y python3 python3-dev libffi6 libffi-dev libssl-dev curl build-essential procps && \
     curl -L 'https://bootstrap.pypa.io/get-pip.py' | python3 && \
-    pip install -U cffi certbot && \
+    pip install -U cffi certbot certbot-nginx && \
     apt remove --purge -y python3-dev build-essential libffi-dev libssl-dev curl && \
     apt-get autoremove -y && \
     apt-get clean && \
@@ -26,7 +26,7 @@ RUN mkdir -p /scripts/startup
 # Copy in default nginx configuration (which just forwards ACME requests to
 # certbot, or redirects to HTTPS, but has no HTTPS configurations by default).
 RUN rm -f /etc/nginx/conf.d/*
-COPY nginx_conf.d/ /etc/nginx/conf.d/
+# COPY nginx_conf.d/ /etc/nginx/conf.d/
 
 ENTRYPOINT []
 CMD ["/bin/bash", "/scripts/entrypoint.sh"]

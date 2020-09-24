@@ -54,7 +54,7 @@ fi
 
 # After trying to get all our certificates, auto enable any configs that we
 # did indeed get certificates for
-auto_enable_configs
+# auto_enable_configs
 
 set +x
 exit $exit_code

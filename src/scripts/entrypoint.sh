@@ -11,7 +11,7 @@ trap "kill 0" EXIT
 template_user_configs
 
 # Immediately run auto_enable_configs so that nginx is in a runnable state
-auto_enable_configs
+# auto_enable_configs
 
 # Start up nginx, save PID so we can reload config inside of run_certbot.sh
 nginx -g "daemon off;" &
